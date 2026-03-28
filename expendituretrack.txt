@@ -1,0 +1,19 @@
+this is will be record tracker for your monthly expenses
+plan to use 
+html bootstrap
+flask ,postgresql
+
+
+#need to add  
+delete,✅
+monthly expenditure, 
+ml things like cateogorigasation
+
+
+    <!-- Chart Section -->
+    <div class="card shadow-sm p-3 mt-4">
+        <h5 class="mb-3">Expense Distribution</h5>
+        <canvas id="expenseChart"></canvas>
+    </div>
+
+</div>

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block add_item %}
+<li class="nav-item">
+    <a class="nav-link" href={{url_for('login')}} >Login</a>
+</li>
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <!-- Hero Section -->
+    <div class="text-center mb-5">
+        <h1 class="fw-bold">Welcome to Spensa</h1>
+        <p class="text-muted">Track your expenses. Control your money. Build better habits.</p>
+        <a href="{{url_for('login' )}}" class="btn btn-dark mt-3">Get Started</a>
+    </div>
+
+    <!-- Cards Section -->
+    <div class="row g-4">
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 p-3">
+                <h5>💸 Track Spending</h5>
+                <p class="text-muted">
+                    Know exactly where your money goes. No more guessing at the end of the month.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 p-3">
+                <h5>📊 Visual Insights</h5>
+                <p class="text-muted">
+                    See patterns in your expenses with clean charts and summaries.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100 p-3">
+                <h5>🧠 Smart Habits</h5>
+                <p class="text-muted">
+                    “Do not save what is left after spending, but spend what is left after saving.”
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Quote Section -->
+    <div class="mt-5 text-center">
+        <blockquote class="blockquote">
+            <p class="mb-0">“Beware of little expenses; a small leak will sink a great ship.”</p>
+            <footer class="blockquote-footer mt-2">Benjamin Franklin</footer>
+        </blockquote>
+    </div>
+
+</div>
+
+{% endblock %}

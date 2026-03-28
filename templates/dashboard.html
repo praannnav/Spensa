@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block add_item %}
+<li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="{{url_for('dashboard')}}">Home</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{{ url_for('analytics') }}">Analytics</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{{ url_for('logout') }}">LogOut</a>
+</li>
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h4 class="mb-4">Add Expense</h4>
+
+    <!-- Add Expense -->
+    <div class="card shadow-sm p-3 mb-4">
+        <form method="POST" action="/dashboard">
+            <div class="row g-2">
+                <div class="col-md-5">
+                    <input name="expense" class="form-control" placeholder="Expense" required>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" name="category">
+                        <option selected>Category</option>
+                        <option value="food">Food</option>
+                        <option value="travel">Travel</option>
+                        <option value="shopping">Shopping</option>
+                        <option value="lent">Lent</option>
+                        <option value="miscellaneous">Miscellaneous</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <input name="amount" type="number" class="form-control" placeholder="Amount" required>
+                </div>
+                <div class="col-md-3">
+                    <input name="date" type="date" class="form-control" required>
+                </div>
+                <div class="col-md-1 d-grid">
+                    <button type="submit" class="btn btn-primary">+</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Expense Table -->
+    <div class="card shadow-sm p-3">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Category</th>
+                    <th>Expense</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% if expenses %}
+                {% for e in expenses %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{e.category}}</td>
+                    <td>{{ e.expense_name }}</td>
+                    <td>₹{{ e.expense_amount }}</td>
+                    <td>{{ e.date }}</td>
+                    <td>
+                        <form method="POST" action="/dashboard" style="display:inline;">
+                            <button type="submit" name="delete_button" value="{{ e.expense_id }}"
+                                class="btn btn-danger btn-sm">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted">
+                        No expenses yet
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+
+    {% endblock %}

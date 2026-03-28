@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container d-flex justify-content-center align-items-center" style="height:80vh;">
+    <div class="card shadow p-4" style="width: 400px;">
+        <h3 class="text-center mb-4">Login</h3>
+
+        <form method="POST" action="/login">
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" placeholder="Enter email" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" placeholder="Enter password" required>
+            </div>
+
+            <div class="d-grid">
+                <button class="btn btn-dark">Login</button>
+            </div>
+        </form>
+
+        <p class="text-center mt-3">
+            New here? <a href="/logup">Create account</a>
+        </p>
+    </div>
+</div>
+
+{% endblock %}

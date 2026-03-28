@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+
+
+{% block add_item %}
+<li class="nav-item">
+    <a class="nav-link active" aria-current="page" href="{{url_for('dashboard')}}">Home</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{{ url_for('analytics') }}">Analytics</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{{ url_for('logout') }}">LogOut</a>
+</li>
+{% endblock %}
+
+{% block content %}
+
+
+<div class="container mt-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-0">📊 Analytics</h3>
+            <small class="text-muted">Understand where your money disappears</small>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- FILTER CARD -->
+        <div class="col-lg-3">
+            <div class="card shadow-sm p-3 h-100">
+                <h6 class="mb-3 fw-semibold">Filters</h6>
+
+                <form id="filterForm">
+                    <label class="form-label small">From</label>
+                    <input type="date" name="starting_date" class="form-control mb-3" required>
+
+                    <label class="form-label small">To</label>
+                    <input type="date" name="ending_date" class="form-control mb-3" required>
+
+                    <button class="btn btn-dark w-100">Apply</button>
+                </form>
+
+                <div id="status" class="mt-3 text-muted small text-center"></div>
+            </div>
+        </div>
+
+        <!-- CHART -->
+        <div class="col-lg-9">
+            <div class="card shadow-sm p-4 h-100">
+                <div class="d-flex justify-content-between mb-3">
+                    <h6 class="fw-semibold">Category Distribution</h6>
+                </div>
+
+                <div style="height:300px; position:relative;">
+                    <canvas id="expenseChart"></canvas>
+                </div>
+
+                <div id="emptyState" class="text-center text-muted mt-3 d-none">
+                    No data found for selected range
+                </div>
+            </div>
+        </div>
+
+        <!-- TABLE -->
+        <div class="col-12">
+            <div class="card shadow-sm p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="fw-semibold mb-0">Transactions</h6>
+                    <span class="text-muted small" id="count"></span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Category</th>
+                                <th>Expense</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="table"></tbody>
+                    </table>
+                </div>
+
+                <div id="noTableData" class="text-center text-muted py-3 d-none">
+                    No transactions available
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+const table = document.getElementById("table");
+const ctx = document.getElementById("expenseChart");
+const status = document.getElementById("status");
+const emptyState = document.getElementById("emptyState");
+const noTableData = document.getElementById("noTableData");
+const count = document.getElementById("count");
+
+let chart;
+
+document.getElementById("filterForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+
+    status.innerText = "Loading...";
+    table.innerHTML = "";
+    emptyState.classList.add("d-none");
+    noTableData.classList.add("d-none");
+
+    try {
+        // TABLE DATA
+        const res1 = await fetch("/api/v1/analytics", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await res1.json();
+
+        count.innerText = `${data.length} entries`;
+
+        if (data.length === 0) {
+            noTableData.classList.remove("d-none");
+        }
+
+        data.forEach(e => {
+            table.innerHTML += `
+            <tr>
+                <td><span class="badge bg-secondary">${e.category}</span></td>
+                <td>${e.expense_name}</td>
+                <td class="fw-semibold">₹${e.expense_amount}</td>
+                <td class="text-muted small">${e.date}</td>
+            </tr>`;
+        });
+
+        // CHART DATA
+        const res2 = await fetch("/api/v1/category_expenses", {
+            method: "POST",
+            body: formData
+        });
+
+        const chartData = await res2.json();
+
+        if (chartData.length === 0) {
+            emptyState.classList.remove("d-none");
+        }
+
+        const labels = chartData.map(e => e.category);
+        const values = chartData.map(e => e.total);
+
+        if (chart) chart.destroy();
+
+        chart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: values
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        status.innerText = "Updated";
+    } catch (err) {
+        status.innerText = "Something broke. Try again.";
+        console.error(err);
+    }
+});
+</script>
+
+{% endblock %}
