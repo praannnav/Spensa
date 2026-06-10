@@ -47,6 +47,13 @@ class Expenses(db.Model):
     expense_amount = db.Column(db.Integer, nullable=False)
 
 
+# INITIALIZE DATABASE TABLES
+def init_db():
+    """Initialize database tables if they don't exist"""
+    with app.app_context():
+        db.create_all()
+
+
 # ROUTES
 @app.route("/")
 def index():
@@ -191,4 +198,6 @@ def get_amount_between_dates():
 
 
 if __name__ == "__main__":
+    # Initialize database tables on startup
+    init_db()
     app.run()
