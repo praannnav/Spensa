@@ -18,6 +18,7 @@ if db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.getenv("SECRET_KEY", "dev")
 
 db = SQLAlchemy(app)
@@ -129,7 +130,7 @@ def logup():
         username = request.form.get("username")
 
         if User.query.filter_by(email_id=email).first():
-            return render_template("login.html", alert_messege="Email already exists")
+            return render_template("logup.html", alert_messege="Email already exists")
 
         new_user = User(username=username, email_id=email, password=password)
         db.session.add(new_user)
